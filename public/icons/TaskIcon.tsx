@@ -6,7 +6,7 @@ interface Props {
 
 function TaskIcon({className} : Props) {
   return (
-    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" className={className ?? 'stroke-black'}>
         <path d="M8.24658 6.41998H11.7466"  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M4.25342 6.41998L4.75342 6.91998L6.25342 5.41998"  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M8.24658 11.0867H11.7466"  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

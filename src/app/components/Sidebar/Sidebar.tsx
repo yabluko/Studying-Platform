@@ -49,7 +49,7 @@ function Sidebar() {
 
 
   return (
-    <aside className='flex flex-col justify-between w-3xs h-screen  bg-white shadow-sm px-12 py-8'>
+    <aside className='flex flex-col justify-between bg-white shadow-sm px-12 py-8'>
         <LogoTemplate/>
         <nav className='flex flex-col '>
             <h1 className='pb-2.5'>

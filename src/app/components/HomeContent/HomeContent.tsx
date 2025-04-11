@@ -6,11 +6,13 @@ import BellsIcon from '../../../../public/icons/BellsIcon'
 import DotsIcon from '../../../../public/icons/DotsIcon'
 import ArrowLeft from '../../../../public/icons/ArrowLeft'
 import ArrowRight from '../../../../public/icons/ArrowRight'
-import computerPic from '../../../../public/images/ComputerProgrammer.jpg'
-import userPic from '../../../../public/images/userProfile.jpg'
-import Image from 'next/image'
+import Card from '../Cards/Card'
+import CourseTable from '../CourseTable/CourseTable'
 
 function HomeContent() {
+    const testArr = [1,2,3];
+
+
     const mockedCourses = [
         {
             id: 1,
@@ -35,14 +37,14 @@ function HomeContent() {
 
 
   return (
-    <div className='px-8 pt-5 min-w-5xl'>
-        <div className='relative mb-3.5'>
-            <input className='w-full border-[1px] border-gray-2 rounded-xl pl-11 pr-4 py-5 focus:outline-none placeholder:text-sm  ' placeholder='Search your course here...'/>
+    <div className='flex flex-col px-8 py-5'>
+        <div className='relative mb-6'>
+            <input className='w-full border-[1px] border-gray-2 rounded-xl pl-11 pr-4 py-5 focus:outline-none placeholder:text-sm max-h-14 ' placeholder='Search your course here...'/>
             <Scurf className={'absolute top-[25px] left-[19px]'}/>
         </div>
 
         {/* Banner */}
-        <section className='relative overflow-hidden bg-purple-10 rounded-[20px] px-6 py-5 mb-3'>
+        <section className='relative overflow-hidden bg-purple-10 rounded-[20px] px-6 py-5 mb-6'>
             <div className='max-w-80 '>
                 <p className='text-xs text-white-1 uppercase '>Online Course</p>
                 <h1 className='text-[24px] text-white-1'>
@@ -61,12 +63,12 @@ function HomeContent() {
         </section>
 
         {/* Watched courses */}
-        <section className='flex justify-between'>
+        <section className='flex justify-between mb-6 gap-3.5'>
             {mockedCourses.map((item) => (
                 
                 <div key={item.id} className='flex items-center justify-around rounded-xl p-3 shadow-md min-w-[271px] '>
                 <div className='flex  items-center justify-center rounded-full w-10 h-10 bg-pink-1'>
-                    <BellsIcon/>
+                    <BellsIcon strokeColor='#702DFF'/>
                 </div>
                 <div>
                     <p className='text-xs text-gray-3 '>2/8 Watched</p>
@@ -78,8 +80,8 @@ function HomeContent() {
         </section>
 
         {/* Continue watching courses */}
-        <section className='mt-3'>
-            <div className='flex items-center justify-between mb-5'>
+        <section className='mb-6'>
+            <div className='flex items-center justify-between '>
                 <h1 className='text-black-2'>Continue Watching</h1>
                 <div className='flex gap-3'>     {/* Dublicating Code Need New Component */}
                     <button className='flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5'>
@@ -90,41 +92,23 @@ function HomeContent() {
                     </button>      
                 </div>
             </div>
-            <div className='flex flex-col justify-between max-w-[268px] min-h-[296px] p-3 shadow-md rounded-[20px]'> {/* Container */}
-                <div className='relative w-[244px] h-[113px] rounded-[12px] overflow-hidden'>
-                        <Image 
-                            src={computerPic}
-                            alt='Picture of author'
-                            fill
-                            style={{
-                            objectFit: 'cover',
-                            }}
-                        />
-                </div>
-                <div className='flex items-center justify-center px-3 py-1.5 bg-pink-1 max-w-[68px] rounded-[8px]'>
-                    <span className='uppercase text-[8px] text-purple-10'>frontend</span>
-                </div>    
-                <h1 className='text-[14px] font-semibold'>
-                Beginner’s Guide to becoming a professional frontend developer
-                </h1>
-                <a href='#' className='flex gap-2 items-center'>
-                        <div className='block relative w-[34px] h-[34px]'>
-                            <Image 
-                                src={userPic}
-                                alt='Picture of author'
-                                fill
-                                style={{
-                                objectFit: 'contain',
-                                }}
-                            />
-                        </div>
-                        <div className='flex flex-col'>
-                            <h2>Prashat</h2>
-                            <p className='text-[8px]'>Python Developer</p>
-                        </div>
-                    </a>
-
+            <div className='flex justify-between w-full'>  {/* Cards */}
+            {
+                testArr.map((_, index) => (
+                    <Card key={index}/>
+                ))
+            }
             </div>
+
+        </section>
+        <section className='flex flex-col justify-between max-h-[216px]'>
+            <div className='flex justify-between'>
+                <h1>Your Mentor</h1>
+                <a href='#' className='text-sky-500'> See All </a>
+            </div>
+
+            <CourseTable/>
+
 
         </section>
 
