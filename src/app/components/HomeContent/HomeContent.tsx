@@ -42,7 +42,6 @@ function HomeContent() {
             <input className='w-full border-[1px] border-gray-2 rounded-xl pl-11 pr-4 py-5 focus:outline-none placeholder:text-sm max-h-14 ' placeholder='Search your course here...'/>
             <Scurf className={'absolute top-[25px] left-[19px]'}/>
         </div>
-
         {/* Banner */}
         <section className='relative overflow-hidden bg-purple-10 rounded-[20px] px-6 py-5 mb-6'>
             <div className='max-w-80 '>
