@@ -1,7 +1,7 @@
 import React from 'react'
-import Sidebar from '../components/Sidebar/Sidebar';
-import ProfileContent from '../components/ProfileContent/ProfileContent';
-import HomeContent from '../components/HomeContent/HomeContent';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import ProfileContent from '../../components/ProfileContent/ProfileContent';
+import HomeContent from '../../components/HomeContent/HomeContent';
 
 
 function Home() {

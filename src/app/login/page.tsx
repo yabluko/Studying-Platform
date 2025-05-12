@@ -1,8 +1,8 @@
 import React from 'react'
-import LoginForm from '../components/LoginForm/LoginForm'
+import LoginForm from '../../components/LoginForm/LoginForm'
 import Image from 'next/image'
 import picLogin from '../../../public/images/photo-login.webp'
-import HeaderComponent from '../components/Header/HeaderComponent'
+import HeaderComponent from '../../components/Header/HeaderComponent'
 
 function Login() {
   return (
