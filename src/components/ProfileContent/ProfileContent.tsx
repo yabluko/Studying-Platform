@@ -1,32 +1,39 @@
+'use client'
 import React from 'react'
 import DotsIcon from '../../../public/icons/DotsIcon'
 import BellsIcon from '../../../public/icons/BellsIcon'
 import InboxIcon from '../../../public/icons/InboxIcon'
 import TaskIcon from '../../../public/icons/TaskIcon'
-import userPic from '../../../../public/images/userProfile.jpg'
-import personPic from '../../../../public/images/person1.jpeg'
+import userPic from '../../../public/images/userProfile.jpg'
+import personPic from '../../../public/images/person1.jpeg'
 import Image from 'next/image'
 import PieChart from '@/components/ui/PieChart'
 import BarChartComponent from '@/components/ui/BarChart'
+// import { getServerSession } from 'next-auth'
+// import { authOptions } from "../../app/api/auth/[...nextauth]/route";
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+
+const arrNumbers = [1,2,3,4];
+
+const mockedArr = [
+    {
+        id: 1,
+        icon: BellsIcon,
+    },
+    {
+        id: 2,
+        icon: InboxIcon,
+    },
+    {
+        id: 3,
+        icon: TaskIcon
+    }
+
+]
 
 function ProfileContent() {
-    const arrNumbers = [1,2,3,4];
-
-    const mockedArr = [
-        {
-            id: 1,
-            icon: BellsIcon,
-        },
-        {
-            id: 2,
-            icon: InboxIcon,
-        },
-        {
-            id: 3,
-            icon: TaskIcon
-        }
-
-    ]
+    const {data : session} = useSession();
   return (
     <div className='flex flex-col gap-9 bg-white-1 px-6 py-8 shadow-sm'>
         <div className='flex justify-between items-center gap-[134px]'>
@@ -39,20 +46,22 @@ function ProfileContent() {
             <div className='w-[100px] relative'>
 
                 <PieChart/>
-                <div className='absolute top-[15px] left-[15px] w-[72px] h-[72px] overflow-hidden rounded-full'>
-                <Image 
-                            src={userPic}
-                            alt='Picture of author'
-                            fill
-                            style={{
-                            objectFit: 'cover',
-                            }}
-                        />
-                </div>  
+                <Link href={`user/${session?.user.id}`} prefetch={false} >
+                    <div className='absolute top-[15px] left-[15px] w-[72px] h-[72px] overflow-hidden rounded-full cursor-pointer'>
+                    <Image 
+                                src={userPic}
+                                alt='Picture of author'
+                                fill
+                                style={{
+                                objectFit: 'cover',
+                                }}
+                            />
+                    </div>  
+                </Link>
             </div>
             <div className='text-center'>
                 <h1>
-                Good Morning Prashant
+                Good Morning {session?.user?.email}
                 </h1>
                 <p className='text-gray-4 font-medium text-xs'>Continue Your Journey And Achieve Your Target</p>
             </div>

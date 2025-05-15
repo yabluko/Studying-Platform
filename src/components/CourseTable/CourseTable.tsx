@@ -1,6 +1,6 @@
 import React from "react";
 import Image from 'next/image'
-import personPic from '../../../../public/images/person1.jpeg'
+import personPic from '../../../public/images/person1.jpeg'
 
 
 const courses = [

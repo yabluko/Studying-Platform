@@ -1,4 +1,5 @@
 'use client'
+import React from 'react';
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -6,8 +7,15 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuLink } from "@/compon
 import LogoTemplate from "../Logo/Logo"
 import SearchInputComponent from "../SearchInput/SearchInputComponent"
 import { redirect } from 'next/navigation'
+import { signIn } from 'next-auth/react';
+
+type Props = React.SVGProps<SVGSVGElement>;
+
 
 function HeaderComponent() {
+
+
+
   return (
     <header className="relative flex h-20 w-full shrink-0 items-center bg-white  px-4 md:px-6 z-5 shadow-md">
       <Sheet>
@@ -96,7 +104,7 @@ function HeaderComponent() {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="ml-auto flex gap-2">
-        <Button variant="outline" onClick={() => redirect('/login')}>Sign in</Button>
+        <Button variant="outline" onClick={() => signIn()}>Sign in</Button>
         <Button onClick={() => redirect('/signup')}>Sign Up</Button>
       </div>
     </header>
@@ -104,7 +112,7 @@ function HeaderComponent() {
 }
 export default HeaderComponent;
 
-function MenuIcon(props ) {
+function MenuIcon(props: Props) {
   return (
     <svg
       {...props}
@@ -126,7 +134,7 @@ function MenuIcon(props ) {
 }
 
 
-function ShirtIcon(props) {
+function ShirtIcon(props: Props) {
   return (
     <svg
       {...props}

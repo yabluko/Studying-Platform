@@ -1,3 +1,4 @@
+import Providers from "@/components/Providers/Providers";
 import "./globals.css";
 
 
@@ -9,7 +10,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+      <Providers>
         {children}
+      </Providers>
       </body>
     </html>
   );

@@ -1,18 +1,61 @@
-import React from 'react'
+'use client'
+import React, { useRef, useState } from 'react'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { CLIENT_BASE_URL } from '@/config/http'
+import { toast, ToastContainer } from 'react-toastify'
 
+
+
+type LoginFormProps = {
+} & React.ComponentPropsWithoutRef<"form">;
 
 function LoginForm({
     className,
     ...props
-  }: React.ComponentPropsWithoutRef<"form">) {
+  }: LoginFormProps) {
+
+    const userEmail = useRef('');
+    const userPass = useRef('');
+    const router = useRouter();
+
+    const [err, setErr] = useState('');
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        const res = await signIn('credentials', {
+          redirect: false,
+          email: userEmail.current,
+          password: userPass.current,
+          callbackUrl: `${CLIENT_BASE_URL}/home`
+        });
+    
+        if (res && !res?.error) {
+          router.push(res.url || `${CLIENT_BASE_URL}/home`);
+        } else {
+          toast.error('Oops! Something went wrong. Please try again later', {
+            position: 'top-right',
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+          setErr('Invalid username or password')
+        }
+    
+      } catch {}
+    }
+    
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={onSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
+      <ToastContainer />
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -22,7 +65,7 @@ function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input id="email" type="email" placeholder="m@example.com" required onChange={(e) => userEmail.current = e.target.value} />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -34,8 +77,9 @@ function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" required onChange={(e) => userPass.current = e.target.value } />
         </div>
+        {err && <p className='text-red-500'>{err}</p>}
         <Button type="submit" className="w-full">
           Login
         </Button>

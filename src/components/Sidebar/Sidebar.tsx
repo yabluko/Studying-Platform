@@ -10,42 +10,41 @@ import TaskIcon from '../../../public/icons/TaskIcon'
 import GroupIcon from '../../../public/icons/GroupIcon'
 import LogoutIcon from '../../../public/icons/LogoutIcon'
 import SettingsIcon from '../../../public/icons/SettingsIcon'
-import profilePic from '../../../../public/images/userProfile.jpg'
+import profilePic from '../../../public/images/userProfile.jpg'
 import { useState } from 'react'
-import Link from "next/link"
+import { signOut } from 'next-auth/react'
 
 
+const mockedValues = [
+    {
+        id: '1',
+        Icon:  HomeIcon,
+        name: 'Dashboard',
+    },
+    {
+        id: '2',
+        Icon:  InboxIcon,
+        name: 'Inbox',
+    }, 
+    {
+        id: '3',
+        Icon:   LessonIcon,
+        name: 'Lesson',
+    },
+    {
+        id: '4',
+        Icon: TaskIcon,
+        name: 'Task',    
+    },
+    {
+        id: '5',
+        Icon: GroupIcon,
+        name: 'Group',
+
+    },
+]
 function Sidebar() {
     const [selectedItem, setSelectedItem] = useState('Dashboard');
-    
-    const mockedValues = [
-        {
-            id: '1',
-            Icon:  HomeIcon,
-            name: 'Dashboard',
-        },
-        {
-            id: '2',
-            Icon:  InboxIcon,
-            name: 'Inbox',
-        }, 
-        {
-            id: '3',
-            Icon:   LessonIcon,
-            name: 'Lesson',
-        },
-        {
-            id: '4',
-            Icon: TaskIcon,
-            name: 'Task',    
-        },
-        {
-            id: '5',
-            Icon: GroupIcon,
-            name: 'Group',
-    
-        },
-    ]
 
 
 
@@ -107,10 +106,10 @@ function Sidebar() {
                     </a>
                 </li>
                 <li>
-                    <Link href='/' className='flex items-center gap-3' prefetch={false}>
+                    <button className='flex items-center gap-3' onClick={() => signOut({callbackUrl: '/login'})}>
                         <LogoutIcon/>
                         <h2 className='text-red-600'>Logout</h2>
-                    </Link>
+                    </button>
                 </li>
             </ul>
         </div>

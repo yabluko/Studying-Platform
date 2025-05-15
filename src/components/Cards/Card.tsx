@@ -1,6 +1,6 @@
 import React from 'react'
-import userPic from '../../../../public/images/userProfile.jpg'
-import computerPic from '../../../../public/images/ComputerProgrammer.jpg'
+import userPic from '../../../public/images/userProfile.jpg'
+import computerPic from '../../../public/images/ComputerProgrammer.jpg'
 import Image from 'next/image'
 import { Progress } from '@/components/ui/progress'
 
