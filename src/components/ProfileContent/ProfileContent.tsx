@@ -4,11 +4,11 @@ import DotsIcon from '../../../public/icons/DotsIcon'
 import BellsIcon from '../../../public/icons/BellsIcon'
 import InboxIcon from '../../../public/icons/InboxIcon'
 import TaskIcon from '../../../public/icons/TaskIcon'
-import userPic from '../../../public/images/userProfile.jpg'
 import personPic from '../../../public/images/person1.jpeg'
 import Image from 'next/image'
 import PieChart from '@/components/ui/PieChart'
 import BarChartComponent from '@/components/ui/BarChart'
+import porifleAvatar from '../../../public/images/blank-avatar.webp'
 // import { getServerSession } from 'next-auth'
 // import { authOptions } from "../../app/api/auth/[...nextauth]/route";
 import Link from 'next/link'
@@ -49,7 +49,7 @@ function ProfileContent() {
                 <Link href={`user/${session?.user.id}`} prefetch={false} >
                     <div className='absolute top-[15px] left-[15px] w-[72px] h-[72px] overflow-hidden rounded-full cursor-pointer'>
                     <Image 
-                                src={userPic}
+                                src={porifleAvatar}
                                 alt='Picture of author'
                                 fill
                                 style={{

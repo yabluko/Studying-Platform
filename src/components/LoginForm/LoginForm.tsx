@@ -38,7 +38,10 @@ function LoginForm({
         });
     
         if (res && !res?.error) {
-          router.push(res.url || `${CLIENT_BASE_URL}/home`);
+          localStorage.setItem('justLoggedIn', 'true')
+          setTimeout(() => {
+            router.push(res.url || `${CLIENT_BASE_URL}/home`);
+          }, 50); 
         } else {
           toast.error('Oops! Something went wrong. Please try again later', {
             position: 'top-right',

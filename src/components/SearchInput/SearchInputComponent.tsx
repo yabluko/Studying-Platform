@@ -3,10 +3,14 @@ import { SearchIcon } from "lucide-react";
 
 function SearchInputComponent() {
   return (
-    <div className="flex min-w-[550px] items-center border border-gray-300 rounded-lg px-2.5 py-1.5 mr-2.5">
-      <SearchIcon className="h-4 w-4 mr-2.5" />
-      <Input type="search" placeholder="Search..." className="w-full border-0" />
-    </div>
+    <div className="relative flex min-w-[550px] min-h-4 items-center border border-gray-300 rounded-lg  mr-2.5 bg-white">
+    <SearchIcon className="h-4 w-4 absolute left-2.5" />
+    <Input
+      type="search"
+      placeholder="Search..."
+      className="w-full border-none bg-transparent placeholder:text-gray-500 focus:outline-none pl-9"
+    />
+  </div>
   )
 }
 

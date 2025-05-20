@@ -8,16 +8,17 @@ import LogoTemplate from "../Logo/Logo"
 import SearchInputComponent from "../SearchInput/SearchInputComponent"
 import { redirect } from 'next/navigation'
 import { signIn } from 'next-auth/react';
+import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 
 type Props = React.SVGProps<SVGSVGElement>;
 
-
-function HeaderComponent() {
-
-
+interface HeaderProps {
+  isFromHome?: boolean;
+}
+function HeaderComponent({isFromHome} :  HeaderProps ) {
 
   return (
-    <header className="relative flex h-20 w-full shrink-0 items-center bg-white  px-4 md:px-6 z-5 shadow-md">
+    <header className="relative flex h-20 w-full shrink-0 items-center bg-white  px-4 md:px-6 z-5 shadow-md justify-between">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="lg:hidden">
@@ -49,7 +50,7 @@ function HeaderComponent() {
           </div>
         </SheetContent>
       </Sheet>
-      <Link href="/" className="mr-7 hidden lg:flex" prefetch={false}>
+      <Link href={isFromHome ? '/home' : '/'} className="mr-7 hidden lg:flex" prefetch={false}>
         <LogoTemplate/>
         <span className="sr-only">ShadCN</span>
       </Link>
@@ -103,10 +104,17 @@ function HeaderComponent() {
           </NavigationMenuLink>
         </NavigationMenuList>
       </NavigationMenu>
+      {
+        isFromHome ? (<ProfileAvatar/>)
+      
+      : (
       <div className="ml-auto flex gap-2">
         <Button variant="outline" onClick={() => signIn()}>Sign in</Button>
         <Button onClick={() => redirect('/signup')}>Sign Up</Button>
-      </div>
+      </div> 
+    )}
+      
+      
     </header>
   )
 }

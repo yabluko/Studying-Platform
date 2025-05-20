@@ -1,11 +1,20 @@
-'use client'
 import React from 'react'
 import LoginForm from '../../../components/LoginForm/LoginForm'
 import Image from 'next/image'
 import picLogin from '../../../../public/images/photo-login.webp'
 import HeaderComponent from '../../../components/Header/HeaderComponent'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { redirect } from 'next/navigation'
 
-function Login() {
+async function Login() {
+
+  const session = await getServerSession(authOptions);
+  console.log(session);
+
+  if (session) {
+    redirect('/home')
+  }
   return (
     <div>
         <HeaderComponent/>
