@@ -28,11 +28,21 @@ function Home() {
   return (
     <>
     <ToastContainer position="top-left" />
-    <div className='flex justify-between'>
-      <Sidebar/>
-      <HomeContent/>
-      <ProfileContent />
-    </div> 
+    <div className="flex h-screen overflow-hidden">
+      <div className="h-full">
+        <Sidebar />
+      </div>
+
+      <div className="flex flex-1 h-full">
+
+        <div className="flex-1 overflow-y-auto">
+          <HomeContent />
+        </div>
+        <div className="h-full">
+          <ProfileContent />
+        </div>
+      </div>
+    </div>
     </>
   )
 }

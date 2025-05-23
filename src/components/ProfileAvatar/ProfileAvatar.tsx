@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { signOut, useSession } from 'next-auth/react';
-import profilePic from '../../../public/images/career-card-digitalmarketer.webp'
+import profilePic from '../../../public/images/blank-avatar.webp'
 
 function ProfileAvatar() {
   const {data : session} = useSession();

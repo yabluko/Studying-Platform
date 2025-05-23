@@ -5,8 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-inter: "Inter", sans-serif; 
-  --color-purple-10: #702CFF; /* Normal Purple */
+  --font-inter: "Inter", sans-serif;
+  --color-purple-10: #702CFF;
+  /* Normal Purple */
   --color-purple-20: #7550FB;
   --color-purple-30: #4A3AFF;
   --color-pink-1: #E3D6FF;
@@ -25,11 +26,12 @@
 @layer base {
   h1 {
     font-size: var(--text-base);
-    color:  var(--color-gray-1);
+    color: var(--color-gray-1);
     font-weight: 600;
     padding-top: 8px;
     padding-bottom: 8px;
   }
+
   a {
     font-weight: 500;
   }
@@ -62,7 +64,7 @@ body,
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.606 0.25 292.717);
-  --chart-1: #702CFF ;
+  --chart-1: #702CFF;
   --chart-2: #9E9E9E;
   --chart-3: #C893FD;
   --chart-4: #E0C6FD;
@@ -153,10 +155,38 @@ body,
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
+/* Spinner styles */
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
 
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade-in effect for video */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.fade-in.visible {
+  opacity: 1;
+}

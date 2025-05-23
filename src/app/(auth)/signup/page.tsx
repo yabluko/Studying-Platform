@@ -27,7 +27,7 @@ interface Props {
   loginUrl?: string;
 }
 
-function Signup ({
+function Signup({
   heading = "Signup",
   subheading = "Create a new account",
   googleText = "Sign up with Google",
@@ -42,13 +42,13 @@ function Signup ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = {
-      email : userEmail.current,
+      email: userEmail.current,
       name: userName.current,
       password: userPass.current,
     }
 
     const res = await signup(formData);
-    if(!res){
+    if (!res) {
       toast.error('Oops! Something went wrong. Please try again later', {
         position: 'top-right',
         autoClose: 3000,
@@ -63,7 +63,7 @@ function Signup ({
       autoClose: 1500,
       closeOnClick: true,
       pauseOnHover: true,
-      onClose: () =>  redirect('/login'),
+      onClose: () => redirect('/login'),
     });
   }
 
@@ -76,8 +76,8 @@ function Signup ({
           <div className="flex flex-col items-center gap-y-2">
             {/* Logo */}
             <div className="flex items-center gap-1 lg:justify-start">
-              <a href="http://localhost:3000">
-              <LogoTemplate/>
+              <a href={`${process.env.NEXT_PUBLIC_BASE_URL}`}>
+                <LogoTemplate />
               </a>
             </div>
             <h1 className="text-3xl font-semibold">{heading}</h1>
@@ -85,7 +85,7 @@ function Signup ({
           </div>
           <div className="flex w-full flex-col gap-8 rounded-md border border-muted bg-white px-6 py-12 shadow-md">
             <form onSubmit={onSubmit}>
-            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                   <Label>Name</Label>
                   <Input
@@ -94,18 +94,18 @@ function Signup ({
                     placeholder="Enter your name"
                     required
                     className="bg-white"
-                    onChange={(e) => userName.current = e.target.value }
+                    onChange={(e) => userName.current = e.target.value}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label>Email</Label>
                   <Input
-                  name="email"
+                    name="email"
                     type="email"
                     placeholder="Enter your email"
                     required
                     className="bg-white"
-                    onChange={(e) => userEmail.current = e.target.value }
+                    onChange={(e) => userEmail.current = e.target.value}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -116,7 +116,7 @@ function Signup ({
                     placeholder="Enter your password"
                     required
                     className="bg-white"
-                    onChange={(e) => userPass.current = e.target.value }
+                    onChange={(e) => userPass.current = e.target.value}
                   />
                 </div>
                 <div className="flex flex-col gap-4">
@@ -128,13 +128,13 @@ function Signup ({
                     {googleText}
                   </Button>
                 </div>
-                </div>
-                </form>
+              </div>
+            </form>
           </div>
           <div className="flex justify-center gap-1 text-sm text-muted-foreground">
             <p>{loginText}</p>
             <Link href="/login" className="font-medium text-primary hover:underline" prefetch={false}>
-                Log in
+              Log in
             </Link>
           </div>
         </div>
@@ -143,4 +143,4 @@ function Signup ({
   );
 };
 
-export default Signup ;
+export default Signup;

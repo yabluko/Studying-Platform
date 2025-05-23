@@ -1,7 +1,27 @@
 export enum UserRole {
-    Student='student',
-    Instructor='instructor',
-    Admin='admin'
+    Student = 'student',
+    Teacher = 'teacher',
+    Admin = 'admin'
+}
+
+export interface User {
+    id: number;
+    email: string;
+    name?: string;
+    surname?: string;
+    userRole: UserRole;
+    role?: {
+        id: number;
+        name: string;
+    };
+    group?: {
+        id: number;
+        name: string;
+    };
+    courses?: {
+        id: number;
+        title: string;
+    }[];
 }
 
 export interface Instructor {
@@ -10,38 +30,49 @@ export interface Instructor {
     password: string;
     name: string;
     surname: string;
-    userRole: 'student' | 'instructor' | 'admin'; // Extend as needed
+    userRole: 'student' | 'teacher' | 'admin'; // Extend as needed
 }
-  
+
+export interface Section {
+    id: string; // UUID
+    title: string;
+    order: number;
+    createdAt: string;
+    updatedAt: string;
+    lessons: Lesson[];
+}
+
 export interface Lesson {
     id: number;
     title: string;
     content: string;
     videoUrl: string;
+    videoDuration: number;
     order: number;
-    createdAt: string; // Use Date if you're parsing these as actual Date objects
-    updatedAt: string;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
 }
-  
+
 export interface Course {
     id: number;
     title: string;
     description: string;
-    imageUrl: string | null;
+    imageUrl: string;
     price: number;
     isPublished: boolean;
     createdAt: string;
     updatedAt: string;
     category: string;
     instructor: Instructor;
-    lessons: Lesson[];
-  }
+    sections: Section[];
+    enrolledStudents: User[];
+}
 
 export interface CourseInterface {
+    id: number;
     title: string;
     description: string;
     imageUrl: string | null;
     price: number;
     category: string;
-  }
-  
+}

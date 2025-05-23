@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { UserRole } from "@/models/course";
 
 declare module "next-auth" {
     interface Session {
@@ -9,6 +10,7 @@ declare module "next-auth" {
             password: string,
             name: string,
             surname: string,
+            userRole: UserRole,
             group: number,
         };
 
@@ -29,6 +31,7 @@ declare module "next-auth/jwt"{
             name: string,
             surname: string,
             group: number,
+            userRole: UserRole,
         };
         
         tokens : {
