@@ -6,6 +6,8 @@ import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { Lesson } from '@/models/course';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
+import { FiHome } from 'react-icons/fi';
 
 // You may want to fetch data in a parent layout or use SWR/React Query for real data
 export default function CourseViewPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -28,7 +30,7 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
         const res = await fetch(`/api/lessons/completed`, { method: 'GET' });
         if (!res.ok) throw new Error('Failed to fetch completed lessons');
         const data = await res.json();
-        const completed = data.map((lessonData: any) => lessonData.lesson.id);
+        const completed = data.map((lessonData: { lesson: { id: number } }) => lessonData.lesson.id);
         setCompletedLessons(completed);
     };
 
@@ -61,7 +63,6 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
                 throw new Error('Failed to fetch lesson video');
             }
             const { src, contentType } = await res.json();
-
             setLessonVideo(src);
             setContentType(contentType);
         }
@@ -100,6 +101,10 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
         <div className="flex min-h-screen">
             {/* Sidebar */}
             <aside className="w-80 bg-gray-50 border-r p-4">
+                <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-1 mb-6">
+                    <FiHome className="w-5 h-5" />
+                    <span>Back to Home</span>
+                </Link>
                 <h2 className="font-bold text-lg mb-4">{course.title}</h2>
                 <div>
                     {sections.map((section: any, sIdx: number) => (

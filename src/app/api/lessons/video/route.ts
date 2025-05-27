@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     if (!videoName) {
         return NextResponse.json({ error: 'Missing videoName parameter' }, { status: 400 });
     }
-    console.log("videoName", videoName);
+
     const video = await getLessonVideo(videoName);
 
     if (!video) {

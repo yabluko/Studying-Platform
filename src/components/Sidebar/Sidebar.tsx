@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation' // 💡 новий хук
 import { useSession } from 'next-auth/react'
 import { UserRole } from '@/models/course'
+import { UsersIcon } from 'lucide-react'
 
 const mockedValues = [
     {
@@ -30,29 +31,17 @@ const mockedValues = [
     },
     {
         id: '3',
-        Icon: LessonIcon,
-        name: 'Lesson',
-        href: '/lesson'
+        Icon: UsersIcon,
+        name: 'Users',
+        href: '/users'
     },
-    // {
-    //     id: '4',
-    //     Icon: TaskIcon,
-    //     name: 'Task',
-    //     href: '/task'
-    // },
-    // {
-    //     id: '5',
-    //     Icon: GroupIcon,
-    //     name: 'Group',
-    //     href: '/group'
-    // },
 ]
 
 function Sidebar() {
     const pathname = usePathname(); // отримуємо поточний шлях
     const { data: session } = useSession();
     const userRole = session?.user?.userRole; // or session?.user?.role depending on your user object
-    console.log("userRole", userRole);
+
     return (
         <aside className='flex flex-col justify-between bg-white shadow-sm px-12 py-8 min-h-screen'>
             <LogoTemplate />
@@ -75,14 +64,14 @@ function Sidebar() {
                     {/* Show My Courses and Create Course for teacher/admin */}
                     {(userRole === UserRole.Teacher || userRole === UserRole.Admin) && (
                         <>
-                            <li>
+                            {/* <li>
                                 <Link href="/my-courses" className='card flex items-center gap-3 pr-2 py-2 group'>
                                     <InboxIcon className={pathname === '/my-courses' ? 'stroke-purple-10' : 'stroke-black group-hover:stroke-purple-10'} />
                                     <span className={pathname === '/my-courses' ? 'text-purple-10' : 'group-hover:text-purple-10'}>
                                         My Courses
                                     </span>
                                 </Link>
-                            </li>
+                            </li> */}
                             <li>
                                 <Link href="/admin/courses/new" className='card flex items-center gap-3 pr-2 py-2 group'>
                                     <span className="text-green-600 font-bold">+ Create Course</span>

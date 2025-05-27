@@ -106,7 +106,6 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                     'use server';
                     try {
                       const res = await enrollInCourse(courseId);
-                      console.log("res", res);
                       if (res.status === 201) {
                         toast.success(`You successfully enrolled in course - ${res.title}`);
                         redirect(`/courses/${courseId}/view`);
@@ -116,15 +115,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                       console.error('Enrollment failed:', error);
                     }
                   }}>
-                    {isEnrolled ? (
-                      <CourseEnrollButton courseId={courseId} />) : (
-                      <Button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white hover:bg-blue-700"
-                      >
-                        Enroll Now
-                      </Button>
-                    )}
+                    <CourseEnrollButton isEnrolled={isEnrolled} courseId={courseId} />
                   </form>
 
                   <div className="mt-6 space-y-4">

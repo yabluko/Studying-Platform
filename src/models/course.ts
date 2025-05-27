@@ -68,6 +68,16 @@ export interface Course {
     enrolledStudents: User[];
 }
 
+
+export type UserCourse = Omit<Course, | 'sections' | 'enrolledStudents'>;
+
+export interface CourseProgress {
+    totalLessons: number;
+    completedLessons: number;
+    progress: number;
+    completedLessonsIds: number[];
+}
+
 export interface CourseInterface {
     id: number;
     title: string;

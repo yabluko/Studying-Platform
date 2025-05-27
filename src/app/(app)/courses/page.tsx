@@ -7,6 +7,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Link from 'next/link';
 
 import React from 'react'
+import { UserRole } from '@/models/course';
 
 async function Courses() {
   const session = await getServerSession(authOptions);
@@ -20,7 +21,7 @@ async function Courses() {
         <div className='px-8 py-6'>
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-[32px] text-gray-1">Course Catalog</h1>
-            {session?.user?.userRole === 'admin' && (
+            {session?.user?.userRole === UserRole.Teacher && (
               <Button asChild>
                 <Link href='/admin/courses/new'>New Course</Link>
               </Button>

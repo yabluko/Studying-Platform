@@ -1,7 +1,7 @@
 import { CourseCategory, PayloadSection } from "@/app/(app)/admin/courses/new/page";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { API_BASE_URL } from "@/config/http";
-import { Course } from "@/models/course";
+import { Course, CourseProgress } from "@/models/course";
 import { getServerSession } from "next-auth";
 
 export interface CoursePayload {
@@ -148,7 +148,7 @@ export async function getLessonVideo(videoName: string | null): Promise<{ src: s
     const session = await getServerSession(authOptions);
     try {
         console.log("Here", videoName);
-        const res = await fetch(`${API_BASE_URL}/courses/lesson-video/video-1.mp4`, {
+        const res = await fetch(`${API_BASE_URL}/courses/lesson-video/${videoName}`, {
             method: 'GET',
             headers: {
                 authorization: `Bearer ${session?.tokens.accessToken}`,
@@ -230,31 +230,32 @@ export async function getCompletedLessons() {
     });
     return response.json();
 }
-// export async function getCourseProgress(courseId: string) {
-//     try {
-//         const session = await getServerSession(authOptions);
 
-//         if (!session) {
-//             throw new Error('Unauthorized');
-//         }
+export async function getCourseProgress(courseId: string): Promise<CourseProgress | null> {
+    try {
+        const session = await getServerSession(authOptions);
 
-//         const response = await fetch(`${API_BASE_URL}/courses/${courseId}/progress`, {
-//             headers: {
-//                 'Authorization': `Bearer ${session.tokens.accessToken}`,
-//             },
-//             cache: 'no-store'
-//         });
+        if (!session) {
+            throw new Error('Unauthorized');
+        }
 
-//         if (!response.ok) {
-//             throw new Error('Failed to fetch course progress');
-//         }
+        const response = await fetch(`${API_BASE_URL}/courses/${courseId}/progress`, {
+            headers: {
+                'Authorization': `Bearer ${session.tokens.accessToken}`,
+            },
+            cache: 'no-store'
+        });
 
-//         return response.json();
-//     } catch (error) {
-//         console.error('Error fetching course progress:', error);
-//         return null;
-//     }
-// }
+        if (!response.ok) {
+            throw new Error('Failed to fetch course progress');
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching course progress:', error);
+        return null;
+    }
+}
 
 // export async function getCourseLessons(courseId: string) {
 //     try {

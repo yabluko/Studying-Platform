@@ -1,15 +1,21 @@
-import { getUserById } from '@/actions/user';
-import UserPage from './UserPage';
+import { CLIENT_BASE_URL } from '@/config/http';
+import UserProfilePage from './UserProfilePage';
 
-type Props = {
-  params: {
-    id: string; 
-  };
-};
+export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  // Fetch user profile
+  const profileRes = await fetch(`${CLIENT_BASE_URL}/api/user/profile/${id}`);
+  const profile = await profileRes.json();
 
-export default async function Page({ params }: Props) {
-    const id = params.id;
-    const user = await getUserById(Number(id));
+  // Fetch user profile image
+  const imageRes = await fetch(`${CLIENT_BASE_URL}/api/user/profile/img/${id}`);
+  const imageData = await imageRes.json();
+  const profileImage = imageData?.image || null;
 
-  return <UserPage user={user} />;
+  return (
+    <UserProfilePage
+      profile={profile}
+      profileImage={profileImage}
+    />
+  );
 }
