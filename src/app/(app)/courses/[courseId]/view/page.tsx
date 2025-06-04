@@ -8,23 +8,43 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { FiHome } from 'react-icons/fi';
+import { getUserCourses } from '@/actions/user';
+import { useRouter } from 'next/navigation';
 
 // You may want to fetch data in a parent layout or use SWR/React Query for real data
 export default function CourseViewPage({ params }: { params: Promise<{ courseId: string }> }) {
     const { courseId } = use(params);
-    // For demo, you might want to fetch with useEffect or getServerSideProps
-    // Here, assume you have a `course` object with sections and lessons
-    // Replace this with your real data fetching logic
+    const router = useRouter();
     const [course, setCourse] = React.useState<any>(null);
     const [selectedSectionIdx, setSelectedSectionIdx] = useState(0);
     const [selectedLessonIdx, setSelectedLessonIdx] = useState(0);
     const [lessonVideo, setLessonVideo] = useState<any>(null);
     const [videoLoading, setVideoLoading] = useState(true);
+    const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [contentType, setContentType] = useState<any>(null);
     const [expandedSectionIdx, setExpandedSectionIdx] = useState<number | null>(0);
 
     const [completedLessons, setCompletedLessons] = useState<number[]>([]);
+
+    const checkEnrollment = async () => {
+        try {
+            const userCourses = await getUserCourses();
+            const isUserEnrolled = userCourses?.some(course => course.id === parseInt(courseId));
+            setIsEnrolled(isUserEnrolled || false);
+            if (!isUserEnrolled) {
+                toast.error('You need to enroll in this course to view its content');
+                router.push(`/courses/${courseId}`);
+            }
+        } catch (error) {
+            console.error('Error checking enrollment:', error);
+            toast.error('Failed to verify course enrollment');
+            router.push(`/courses/${courseId}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const fetchCompletedLessons = async () => {
         const res = await fetch(`/api/lessons/completed`, { method: 'GET' });
@@ -33,6 +53,10 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
         const completed = data.map((lessonData: { lesson: { id: number } }) => lessonData.lesson.id);
         setCompletedLessons(completed);
     };
+
+    useEffect(() => {
+        checkEnrollment();
+    }, [courseId]);
 
     useEffect(() => {
         // Fetch course details here
@@ -46,8 +70,10 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
             const data = await res.json();
             setCourse(data);
         }
-        fetchCourse();
-    }, [courseId]);
+        if (isEnrolled) {
+            fetchCourse();
+        }
+    }, [courseId, isEnrolled]);
 
     useEffect(() => {
         async function fetchLessonVideo() {
@@ -70,8 +96,10 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
     }, [course, selectedSectionIdx, selectedLessonIdx]);
 
     useEffect(() => {
-        fetchCompletedLessons();
-    }, []);
+        if (isEnrolled) {
+            fetchCompletedLessons();
+        }
+    }, [isEnrolled]);
 
     useEffect(() => {
         setVideoLoading(true); // Start loading when lessonVideo changes
@@ -91,7 +119,20 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
         await fetchCompletedLessons();
     }
 
-    if (!course) return <div>Loading...</div>;
+    if (isLoading) return (
+        <div className="flex flex-col items-center justify-center min-h-[300px]">
+            <span className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></span>
+            <span className="text-purple-700 font-medium text-lg">Loading course content...</span>
+        </div>
+    );
+    if (!isEnrolled) return null;
+    if (!course) return (
+        <div className="flex flex-col items-center justify-center min-h-[300px]">
+            <span className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></span>
+            <span className="text-purple-700 font-medium text-lg">Loading course content...</span>
+        </div>
+    );
+
     const sections = course.sections || [];
     const selectedSection = sections[selectedSectionIdx];
     const lessons = selectedSection?.lessons || [];
@@ -101,7 +142,7 @@ export default function CourseViewPage({ params }: { params: Promise<{ courseId:
         <div className="flex min-h-screen">
             {/* Sidebar */}
             <aside className="w-80 bg-gray-50 border-r p-4">
-                <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-1 mb-6">
+                <Link href="/home" className="flex items-center gap-2 text-gray-600 hover:text-purple-1 mb-6">
                     <FiHome className="w-5 h-5" />
                     <span>Back to Home</span>
                 </Link>

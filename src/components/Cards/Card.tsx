@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Progress } from '@/components/ui/progress'
 import Link from 'next/link'
 import profilePic from '../../../public/images/blank-avatar.webp'
+import { getUserProfileImage } from '@/actions/user'
 
 
 interface Props {
@@ -11,13 +12,26 @@ interface Props {
     name: string;
     category: string;
     courseImg: string;
+    instructorId: number;
     instructorName: string;
+    intstructorHeadline: string;
     onProgressUpdate: (id: number, totalLessons: number, completedLessons: number) => void;
 }
 
-function Card({ id, name, category, courseImg, instructorName, onProgressUpdate }: Props) {
+function Card({ id, name, category, courseImg, instructorName, instructorId, intstructorHeadline, onProgressUpdate }: Props) {
     const [imageUrl, setImageUrl] = useState<string>('');
     const [progress, setProgress] = useState<number>(0);
+    const [userImg, setUserImg] = useState<string>();
+    
+    useEffect(() => {
+        async function fetchUserProfileImage(instructorId : number){
+            const res = await getUserProfileImage(instructorId.toString())
+            if(res) {
+                setUserImg(res);
+            }
+        }
+        fetchUserProfileImage(instructorId)
+    }, [instructorId])
 
     // Fetch image
     useEffect(() => {
@@ -55,9 +69,10 @@ function Card({ id, name, category, courseImg, instructorName, onProgressUpdate 
     }, [id]);
 
     return (
-        <Link href={`/courses/${id}/view`}>
-
-            <div className='flex flex-col justify-between max-w-[268px] min-h-[296px] p-3 shadow-md rounded-[20px]'> {/* Container */}
+        
+        <div className='flex flex-col justify-around max-w-[268px] min-h-[296px] p-3 shadow-md rounded-[20px]'> {/* Container */}
+        <div>
+                <Link href={`/courses/${id}/view`}>
                 <div className='relative w-[244px] h-[113px] rounded-[12px] overflow-hidden'>
                     {imageUrl && (
                         <Image
@@ -70,34 +85,36 @@ function Card({ id, name, category, courseImg, instructorName, onProgressUpdate 
                         />
                     )}
                 </div>
-                <div className='flex items-center justify-center px-3 py-1.5 bg-pink-1 max-w-[68px] rounded-[8px]'>
+                <div className='flex items-center justify-center px-3 py-1.5 bg-pink-1 max-w-[68px] rounded-[8px] mt-3'>
                     <span className='uppercase text-[8px] text-purple-10'>{category}</span>
                 </div>
                 <h1 className='text-[14px] font-semibold '>
-                    {name}
+                    {name} 
                 </h1>
                 <Progress value={progress} />
                 {/* <Link href="/home"> */}
-                <div className='flex gap-2 items-center'>
-                    <div className='block relative w-[34px] h-[34px]'>
-                        <Image
-                            src={profilePic}
-                            alt='Picture of author'
-                            fill
-                            style={{
-                                objectFit: 'contain',
-                            }}
-                        />
-                    </div>
-                    <div className='flex flex-col'>
-                        <h2>{instructorName}</h2>
-                        {/* <p className='text-[8px]'>Python Developer</p> */}
-                    </div>
-
+                </Link>
                 </div>
+                <Link href={`/user/${instructorId}`}>
+                <div className='flex gap-2 items-center'>
+                        <div className='block relative w-[34px] h-[34px]'>
+                            <Image
+                                src={userImg || profilePic}
+                                alt='Picture of author'
+                                fill
+                                style={{
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        </div>
+                        <div className='flex flex-col'>
+                            <h2>{instructorName}</h2>
+                            <p className='text-[8px]'>{intstructorHeadline}</p>
+                        </div>                
+                </div>
+                    </Link>    
                 {/* </Link> */}
             </div>
-        </Link>
     )
 }
 

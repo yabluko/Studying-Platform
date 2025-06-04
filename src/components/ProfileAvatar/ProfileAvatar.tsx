@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { signOut, useSession } from 'next-auth/react';
 import profilePic from '../../../public/images/blank-avatar.webp'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+
 
 function ProfileAvatar() {
+  const router = useRouter()
   const { data: session } = useSession();
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -26,6 +29,7 @@ function ProfileAvatar() {
           }
         }
       } catch (e) {
+        toast.error(`Erro occured ${e}`)
         setProfileImage(null);
       }
     };
@@ -49,8 +53,8 @@ function ProfileAvatar() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{session?.user?.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href="/settings">Settings</Link>
+        <DropdownMenuItem onClick={() => router.push('/settings')}>
+          Settings
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button onClick={() => signOut({ callbackUrl: '/login' })} className='text-red-500'>

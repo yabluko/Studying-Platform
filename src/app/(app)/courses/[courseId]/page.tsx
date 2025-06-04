@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation';
 import HeaderComponent from '@/components/Header/HeaderComponent';
 import Footer from '@/components/Footer.jsx/Footer';
-import { enrollInCourse, getCourseDetails, getCourseImage, getCourses } from '@/actions/course';
+import { enrollInCourse, getCourseDetails, getCourseImage } from '@/actions/course';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Button } from '@/components/ui/button';
 import { Clock, Users, BookOpen } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -13,15 +12,6 @@ import { formatDuration } from '@/helpers/datatime';
 import { toast } from 'react-toastify';
 import { CourseEnrollButton } from '@/components/CourseEnrollButton/CourseEnrollButton';
 
-
-interface Course {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  imageUrl?: string;
-}
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = await params;

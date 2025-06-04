@@ -12,7 +12,6 @@ export function CourseContentAccordion({ sections }: { sections: Section[] }) {
     const courseSecondsDuration = sections.map(section => section.lessons.map(lesson => lesson.videoDuration)
         .reduce((acc, curr) => acc + curr, 0))
 
-    console.log("sections", sections);
     return (
         <div className="space-y-2">
             {sections?.map((section, idx) => {

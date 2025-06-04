@@ -10,14 +10,39 @@ import ArrowRight from '../../../public/icons/ArrowRight'
 import Card from '../../components/Cards/Card'
 import CourseTable from '../../components/CourseTable/CourseTable'
 import { UserCourse } from '@/models/course'
+import Link from 'next/link'
 
 function HomeContent() {
     const [courses, setCourses] = useState<UserCourse[]>([]);
     const [loading, setLoading] = useState(true);
     const [courseProgress, setCourseProgress] = useState<Record<number, { totalLessons: number; completedLessons: number }>>({});
+    const [carouselIndex, setCarouselIndex] = useState(0);
+    const maxVisible = 3;
+    const [watchedCarouselIndex, setWatchedCarouselIndex] = useState(0);
+    const watchedMaxVisible = 3;
 
     const handleProgressUpdate = (courseId: number, totalLessons: number, completedLessons: number) => {
         setCourseProgress(prev => ({ ...prev, [courseId]: { totalLessons, completedLessons } }));
+    };
+
+    const handlePrev = () => {
+        setCarouselIndex((prev) => Math.max(prev - 1, 0));
+    };
+
+    const handleNext = () => {
+        setCarouselIndex((prev) =>
+            Math.min(prev + 1, courses.length - maxVisible)
+        );
+    };
+
+    const handleWatchedPrev = () => {
+        setWatchedCarouselIndex((prev) => Math.max(prev - 1, 0));
+    };
+
+    const handleWatchedNext = () => {
+        setWatchedCarouselIndex((prev) =>
+            Math.min(prev + 1, courses.length - watchedMaxVisible)
+        );
     };
 
     useEffect(() => {
@@ -37,7 +62,15 @@ function HomeContent() {
         fetchCourses();
     }, []); // Only fetch once on mount
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center min-h-[300px]">
+            <span className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></span>
+            <span className="text-purple-700 font-medium text-lg">Loading your dashboard...</span>
+        </div>
+    );
+
+    const visibleCourses = courses.slice(carouselIndex, carouselIndex + maxVisible);
+    const visibleWatchedCourses = courses.slice(watchedCarouselIndex, watchedCarouselIndex + watchedMaxVisible);
 
     return (
         <div className='flex flex-col px-8 py-5'>
@@ -65,30 +98,53 @@ function HomeContent() {
             </section>
 
             {/* Watched courses */}
-            <section className='flex justify-between mb-6 gap-3.5'>
-                {courses?.length > 0 ? (
-                    courses.map((course) => (
-                        <div key={course.id} className='flex items-center justify-around rounded-xl p-3 shadow-md min-w-[271px]'>
-                            <div className='flex items-center justify-center rounded-full w-10 h-10 bg-pink-1'>
-                                <BellsIcon strokeColor='#702DFF' />
-                            </div>
-                            <div>
-                                <p className='text-xs text-gray-3'>
-                                    {courseProgress[course.id]
-                                        ? `${courseProgress[course.id].completedLessons}/${courseProgress[course.id].totalLessons} Watched`
-                                        : 'Loading...'}
-                                </p>
-                                <h2 className='text-xs text-black-2'>{course.title}</h2>
-                            </div>
-                            <DotsIcon />
+            <section className='flex flex-col mb-6 gap-3.5'>
+                <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-lg font-semibold">Watched Courses</h2>
+                    {courses.length > watchedMaxVisible && (
+                        <div className="flex gap-2">
+                            <button
+                                className="flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5"
+                                onClick={handleWatchedPrev}
+                                disabled={watchedCarouselIndex === 0}
+                            >
+                                <ArrowLeft />
+                            </button>
+                            <button
+                                className="flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5"
+                                onClick={handleWatchedNext}
+                                disabled={watchedCarouselIndex >= courses.length - watchedMaxVisible}
+                            >
+                                <ArrowRight />
+                            </button>
                         </div>
-                    ))
-                ) : (
-                    <div className='w-full text-center p-6 bg-white rounded-xl border-2 border-purple-2 shadow-[0_0_15px_rgba(112,45,255,0.1)] hover:shadow-[0_0_20px_rgba(112,45,255,0.2)] transition-all duration-300'>
-                        <p className='text-gray-600'>You haven't enrolled in any courses yet.</p>
-                        <a href="/courses" className='text-purple-1 hover:text-purple-2 mt-2 inline-block'>Browse available courses</a>
-                    </div>
-                )}
+                    )}
+                </div>
+                <div className="flex gap-3.5">
+                    {courses?.length > 0 ? (
+                        visibleWatchedCourses.map((course) => (
+                            <div key={course.id} className='flex items-center justify-around rounded-xl p-3 shadow-md min-w-[271px]'>
+                                <div className='flex items-center justify-center rounded-full w-10 h-10 bg-pink-1'>
+                                    <BellsIcon strokeColor='#702DFF' />
+                                </div>
+                                <div>
+                                    <p className='text-xs text-gray-3'>
+                                        {courseProgress[course.id]
+                                            ? `${courseProgress[course.id].completedLessons}/${courseProgress[course.id].totalLessons} Watched`
+                                            : 'Loading...'}
+                                    </p>
+                                    <h2 className='text-xs text-black-2'>{course.title}</h2>
+                                </div>
+                                <DotsIcon />
+                            </div>
+                        ))
+                    ) : (
+                        <div className='w-full text-center p-6 bg-white rounded-xl border-2 border-purple-2 shadow-[0_0_15px_rgba(112,45,255,0.1)] hover:shadow-[0_0_20px_rgba(112,45,255,0.2)] transition-all duration-300'>
+                            <p className='text-gray-600'>You have not enrolled in any courses yet.</p>
+                            <Link href="/courses" className='text-purple-1 hover:text-purple-2 mt-2 inline-block'>Browse available courses</Link>
+                        </div>
+                    )}
+                </div>
             </section>
 
             {/* Continue watching courses */}
@@ -97,10 +153,18 @@ function HomeContent() {
                     <h1 className='text-black-2'>Continue Watching</h1>
                     {courses?.length > 0 && (
                         <div className='flex gap-3'>
-                            <button className='flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5'>
+                            <button
+                                className="flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5"
+                                onClick={handlePrev}
+                                disabled={carouselIndex === 0}
+                            >
                                 <ArrowLeft />
                             </button>
-                            <button className='flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5'>
+                            <button
+                                className="flex items-center w-6 h-6 border-[1px] border-gray-4 rounded-full p-1.5"
+                                onClick={handleNext}
+                                disabled={carouselIndex >= courses.length - maxVisible}
+                            >
                                 <ArrowRight />
                             </button>
                         </div>
@@ -108,23 +172,25 @@ function HomeContent() {
                 </div>
                 <div className='flex justify-between w-full'>
                     {courses?.length > 0 ? (
-                        courses.map((course) => (
+                        visibleCourses.map((course) => (
                             <Card
                                 key={course.id}
                                 id={course.id}
                                 name={course.title}
                                 category={course.category}
                                 courseImg={course.imageUrl}
+                                instructorId={course.instructor.id}
                                 instructorName={course.instructor.name}
+                                intstructorHeadline={course.instructor.headline}
                                 onProgressUpdate={(id, totalLessons, completedLessons) => handleProgressUpdate(id, totalLessons, completedLessons)}
                             />
                         ))
                     ) : (
                         <div className='w-full text-center p-8 bg-white rounded-xl border-2 border-purple-2 shadow-[0_0_15px_rgba(112,45,255,0.1)] hover:shadow-[0_0_20px_rgba(112,45,255,0.2)] transition-all duration-300'>
                             <p className='text-gray-600 mb-4'>Start your learning journey today!</p>
-                            <a href="/courses" className='inline-block bg-purple-1 text-white-1 px-6 py-2 rounded-lg hover:bg-purple-2 transition-colors'>
+                            <Link href="/courses" className='inline-block bg-purple-1 text-white-1 px-6 py-2 rounded-lg hover:bg-purple-2 transition-colors'>
                                 Explore Courses
-                            </a>
+                            </Link>
                         </div>
                     )}
                 </div>
@@ -132,7 +198,7 @@ function HomeContent() {
             <section className='flex flex-col justify-between max-h-[216px]'>
                 <div className='flex justify-between'>
                     <h1>Your Mentor</h1>
-                    <a href='#' className='text-sky-500'> See All </a>
+                    <Link href='#' className='text-sky-500'> See All </Link>
                 </div>
 
                 <CourseTable />

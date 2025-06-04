@@ -1,4 +1,4 @@
-import { getUserProfileImage, uploadUserProfileImage } from "@/actions/user";
+import { uploadUserProfileImage } from "@/actions/user";
 import { NextRequest, NextResponse } from "next/server";
 
 

@@ -33,7 +33,7 @@ export default function CourseCreationWizard() {
   const [lessonInputs, setLessonInputs] = useState<{ title: string; description: string; video: File | null }[]>([]);
   const [courseId, setCourseId] = useState<number | null>(null);
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  console.log("fileInputRefs", fileInputRefs.current);
+
 
   // Stepper UI
   const steps = [
@@ -100,7 +100,6 @@ export default function CourseCreationWizard() {
           method: 'POST',
           body: formData,
         });
-        console.log("res", res);
         if (!res.ok) {
           throw new Error('Failed to create section with lesson');
         }
@@ -135,7 +134,6 @@ export default function CourseCreationWizard() {
     toast.success('Course created successfully');
   };
 
-  console.log("lessonInputs", lessonInputs);
   return (
     <div>
       <HeaderComponent isFromHome={true} />
@@ -253,7 +251,6 @@ export default function CourseCreationWizard() {
                       value={lessonInputs[idx]?.title || ''}
                       onChange={e => {
                         const newInputs = [...lessonInputs];
-                        console.log("newInputs", newInputs);
                         newInputs[idx].title = e.target.value;
                         setLessonInputs(newInputs);
                       }}

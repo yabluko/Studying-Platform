@@ -10,32 +10,32 @@ import { redirect } from 'next/navigation'
 async function Login() {
 
   const session = await getServerSession(authOptions);
-  console.log(session);
 
   if (session) {
     redirect('/home')
   }
   return (
     <div>
-        <HeaderComponent/>
-        <div className="grid min-h-svh lg:grid-cols-2">
+      <HeaderComponent />
+      <div className="grid min-h-svh lg:grid-cols-2">
         <div className="relative hidden lg:block">
-            <Image
-                    src={picLogin}
-                    alt='Picture of author'
-                    fill
-                    style={{
-                        objectFit: 'cover',}}
-                        />
+          <Image
+            src={picLogin}
+            alt='Picture of author'
+            fill
+            style={{
+              objectFit: 'cover',
+            }}
+          />
         </div>
         <div className="flex">
-            <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-xs">
-                <LoginForm />
+              <LoginForm />
             </div>
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
   )
 }

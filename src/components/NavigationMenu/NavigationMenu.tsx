@@ -2,6 +2,9 @@
 'use client'
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+
 
 const settingsOptions = [
   "View public profile",
@@ -16,6 +19,8 @@ export function NavigationMenuWithActiveItem({
   active: string,
   setActive: (item: string) => void
 }) {
+  const router = useRouter();
+  const {data : session} = useSession();
   return (
     <div>
       <Card className="w-64">
@@ -24,7 +29,14 @@ export function NavigationMenuWithActiveItem({
             {settingsOptions.map((option) => (
               <li key={option}>
                 <button
-                  onClick={() => setActive(option)}
+                  onClick={() => {
+                      if(option === settingsOptions[0]){
+                        router.push(`/user/${session?.user.id}`);
+                      }else{
+                        setActive(option)
+                      }
+                    }
+                  }
                   className={cn(
                     "w-full text-left px-4 py-2 rounded-md text-sm transition-colors",
                     active === option

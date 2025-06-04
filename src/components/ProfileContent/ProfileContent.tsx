@@ -4,14 +4,13 @@ import DotsIcon from '../../../public/icons/DotsIcon'
 import BellsIcon from '../../../public/icons/BellsIcon'
 import InboxIcon from '../../../public/icons/InboxIcon'
 import TaskIcon from '../../../public/icons/TaskIcon'
-import personPic from '../../../public/images/person1.jpeg'
 import Image from 'next/image'
 import PieChart from '@/components/ui/PieChart'
 import BarChartComponent from '@/components/ui/BarChart'
 import porifleAvatar from '../../../public/images/blank-avatar.webp'
 import Link from 'next/link'
+import { getUserProfileImage, getUserProfileInfo } from '@/actions/user'
 
-const arrNumbers = [1, 2, 3, 4];
 const mockedArr = [
     { id: 1, icon: BellsIcon },
     { id: 2, icon: InboxIcon },
@@ -32,9 +31,10 @@ function ProfileContent() {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await fetch("/api/user/profile")
-                const data = await response.json()
-                setProfile(data)
+                const response = await getUserProfileInfo();
+                if (response) {
+                    setProfile(response)
+                }
             } catch (error) {
                 console.error('Error fetching user profile:', error)
             }
@@ -43,15 +43,14 @@ function ProfileContent() {
     }, [])
 
     useEffect(() => {
+        if (!profile?.id) return;
         const fetchUserProfileImage = async () => {
-            if (!profile?.id) return;
             setImageLoading(true);
             try {
-                const response = await fetch(`/api/user/profile/img/${profile.id}`)
-                if (!response.ok) throw new Error('Failed to fetch image');
-                const data = await response.json();
-                if (data?.image) {
-                    setProfileImage(data.image)
+                const response = await getUserProfileImage(profile?.id);
+
+                if (response) {
+                    setProfileImage(response)
                 } else {
                     setProfileImage(null)
                 }
@@ -62,9 +61,7 @@ function ProfileContent() {
                 setImageLoading(false);
             }
         }
-        if (profile?.id) {
-            fetchUserProfileImage()
-        }
+        fetchUserProfileImage()
     }, [profile?.id])
 
     return (

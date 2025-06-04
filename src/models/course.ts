@@ -30,7 +30,10 @@ export interface Instructor {
     password: string;
     name: string;
     surname: string;
-    userRole: 'student' | 'teacher' | 'admin'; // Extend as needed
+    userRole: 'student' | 'teacher' | 'admin';
+    headline: string;
+    profileImage: string;
+
 }
 
 export interface Section {
@@ -85,4 +88,27 @@ export interface CourseInterface {
     imageUrl: string | null;
     price: number;
     category: string;
+}
+
+
+export interface InstructorCourses {
+    course: {
+        id: number,
+        title: string,
+        description: string,
+        imageUrl: string,
+        price: number,
+        isPublished: boolean,
+        category: string,
+        createdAt: string,
+        updatedAt: string
+      },
+      instructor: {
+        id: number,
+        name: string,
+        surname: string,
+        email: string,
+        profileImage:string,
+        headline: string
+      }
 }

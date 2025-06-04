@@ -1,29 +1,40 @@
-import React, { useEffect, useState } from "react";
-import Image from 'next/image'
-import profilePic from '../../../public/images/blank-avatar.webp'
+'use client'
 
-interface InstructorCourse {
-  id: number;
-  title: string;
-  category: string;
-  instructor: {
-    name: string;
-    imageUrl?: string;
-  };
-  createdAt: string;
-}
+import React, { useEffect, useState } from "react";
+import { getUserInstructorCourses, getUserProfileImage } from "@/actions/user";
+import { InstructorCourses } from "@/models/course";
+import CourseTableBody from "../CourseTableBody/CourseTableBody";
 
 function CourseTable() {
-  const [instructorCourses, setInstructorCourses] = useState<InstructorCourse[]>([]);
+  const [instructorCourses, setInstructorCourses] = useState<InstructorCourses[]>([]);
+  const [instructorImages, setInstructorImages] = useState<{ [id: string]: string | undefined }>({})
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchInstructorCourses() {
       try {
-        const response = await fetch('/api/user/insturctor');
-        const data = await response.json();
-        if (response.ok) {
-          setInstructorCourses(data);
+        const response = await getUserInstructorCourses();
+        if (response) {
+          setInstructorCourses(response);
+
+          // Fetch images for each unique instructor
+          const uniqueInstructors = new Map<number, InstructorCourses>();
+          response.forEach((course) => {
+            if (!uniqueInstructors.has(course.instructor.id)) {
+              uniqueInstructors.set(course.instructor.id, course);
+            }
+          });
+
+          const images: { [id: string]: string | undefined } = {};
+          await Promise.all(
+            Array.from(uniqueInstructors.values()).map(async (course) => {
+              const img = await getUserProfileImage(course.instructor.id.toString());
+              if (img) {
+                images[course.instructor.id.toString()] = img;
+              }
+            })
+          );
+          setInstructorImages(images);
         }
       } catch (error) {
         console.error("Error fetching instructor courses:", error);
@@ -47,8 +58,17 @@ function CourseTable() {
     );
   }
 
+  // Залишити лише унікальних інструкторів
+  const uniqueInstructorMap = new Map<number, InstructorCourses>();
+  instructorCourses.forEach(course => {
+    if (!uniqueInstructorMap.has(course.instructor.id)) {
+      uniqueInstructorMap.set(course.instructor.id, course);
+    }
+  });
+  const uniqueInstructors = Array.from(uniqueInstructorMap.values());
+
   return (
-    <div className="overflow-hidden rounded-lg shadow-lg border bg-white">
+    <div className="rounded-lg shadow-lg border bg-white">
       <table className="w-full text-left">
         <thead className="text-gray-1 text-[10px] uppercase">
           <tr>
@@ -60,36 +80,17 @@ function CourseTable() {
         </thead>
 
         <tbody>
-          {instructorCourses.map((course) => (
-            <tr key={`course-${course.id}`} className="border-b">
-              <td className="px-6 py-4 flex items-center gap-4">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                  <Image
-                    src={course.instructor.imageUrl || profilePic}
-                    alt={`Picture of ${course.instructor.name}`}
-                    fill
-                    style={{
-                      objectFit: 'cover',
-                    }}
-                  />
-                </div>
-                <div>
-                  <p className="font-medium text-sm">{course.instructor.name}</p>
-                  <p className="text-gray-500 text-sm">{new Date(course.createdAt).toLocaleDateString()}</p>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <span className="bg-purple-200 text-purple-600 px-3 py-0.5 text-[10px] rounded-full">
-                  {course.category}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-xs font-normal">{course.title}</td>
-              <td>
-                <button className="bg-purple-100 text-purple-600 px-3 py-0.5 text-[10px] rounded-full hover:bg-purple-200">
-                  Show Details
-                </button>
-              </td>
-            </tr>
+          {uniqueInstructors.map((course) => (
+            <CourseTableBody
+              key={course.instructor.id}
+              instructorId={course.instructor.id}
+              instructorName={course.instructor.name}
+              instructorSurname={course.instructor.surname}
+              courseCreatedAt={course.course.createdAt}
+              courseCategory={course.course.category}
+              courseTitle={course.course.title}
+              profileImage={instructorImages[course.instructor.id]}
+            />
           ))}
         </tbody>
       </table>

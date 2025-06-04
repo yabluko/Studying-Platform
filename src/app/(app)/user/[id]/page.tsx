@@ -1,21 +1,17 @@
-import { CLIENT_BASE_URL } from '@/config/http';
 import UserProfilePage from './UserProfilePage';
+import { getUserProfileImage, getUserProfileInfo } from '@/actions/user';
 
 export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  // Fetch user profile
-  const profileRes = await fetch(`${CLIENT_BASE_URL}/api/user/profile/${id}`);
-  const profile = await profileRes.json();
 
-  // Fetch user profile image
-  const imageRes = await fetch(`${CLIENT_BASE_URL}/api/user/profile/img/${id}`);
-  const imageData = await imageRes.json();
-  const profileImage = imageData?.image || null;
+  const profile = await getUserProfileInfo(id);
+
+  const imageRes = await getUserProfileImage(id);
 
   return (
     <UserProfilePage
       profile={profile}
-      profileImage={profileImage}
+      profileImage={imageRes || ''}
     />
   );
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -17,11 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { getUserProfileInfo, updateUserProfile } from "@/actions/user"
 
 function CardWithForm() {
+  const { data } = useSession();
   const router = useRouter()
+
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
   const [email, setEmail] = useState("")
@@ -36,42 +41,36 @@ function CardWithForm() {
   const [initialRole, setInitialRole] = useState("")
 
   useEffect(() => {
+    if (!data?.user?.id) return;
     async function fetchProfile() {
       try {
-        const res = await fetch("/api/user/profile")
-        if (res.ok) {
-          const data = await res.json()
-          console.log(data)
-          setName(data.name || "")
-          setUserRole(data.userRole || "")
-          setInitialRole(data.userRole || "")
-          setSurname(data.surname || "")
-          setEmail(data.email || "")
-          setHeadline(data.headline || "")
-          setBio(data.bio || "")
-          setWebsite(data.socialLinks.website || "")
-          setFacebook(data.socialLinks.facebook || "")
-          setInstagram(data.socialLinks.instagram || "")
-          setLinkedin(data.socialLinks.linkedin || "")
+        const res = await getUserProfileInfo(data?.user.id.toString());
+        if (res) {
+          setName(res.name || "")
+          setUserRole(res.userRole || "")
+          setInitialRole(res.userRole || "")
+          setSurname(res.surname || "")
+          setEmail(res.email || "")
+          setHeadline(res.headline || "")
+          setBio(res.bio || "")
+          setWebsite(res?.socialLinks.website || "")
+          setFacebook(res?.socialLinks.facebook || "")
+          setInstagram(res?.socialLinks.instagram || "")
+          setLinkedin(res?.socialLinks.linkedin || "")
         }
       } catch (err) {
-        // Optionally handle error
+        console.error('Catch error during getUserProfileInfogetU', err);
       }
     }
     fetchProfile()
-  }, [])
+  }, [data])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, userRole, email, headline, bio, surname, website, facebook, instagram, linkedin }),
-      })
-      const data = await res.json()
-      if (res.ok) {
+      const res = await updateUserProfile({ name, userRole, email, headline, bio, surname, website, facebook, instagram, linkedin });
+      if (res) {
         toast.success("Profile updated successfully!")
         // Check if role was changed
         if (initialRole !== userRole) {
@@ -86,7 +85,7 @@ function CardWithForm() {
         toast.error("Failed to update profile.")
       }
     } catch (err) {
-      toast.error("An error occurred.")
+      toast.error(`An error occurred. - ${err} `);
     } finally {
       setLoading(false)
     }
@@ -127,7 +126,7 @@ function CardWithForm() {
                 <Label htmlFor="headline">Headline</Label>
                 <Input id="headline" value={headline} onChange={e => setHeadline(e.target.value)} placeholder="Headline" />
               </div>
-              <p className="text-sm text-muted-foreground">Add a professional headline like, "Instructor at Udemy" or "Architect."</p>
+              <p className="text-sm text-muted-foreground">Add a professional headline like, &quotInstructor at Udemy&quot or &quotrchitect&quot</p>
               <div>
                 <div className="grid w-full gap-1.5">
                   <Label htmlFor="message-2">Bio</Label>

@@ -15,8 +15,9 @@ type Props = React.SVGProps<SVGSVGElement>;
 interface HeaderProps {
   isFromHome?: boolean;
   children?: React.ReactNode;
+  onSearch?: (value: string) => void;
 }
-function HeaderComponent({ isFromHome, children }: HeaderProps) {
+function HeaderComponent({ isFromHome, children, onSearch }: HeaderProps) {
   const session = useSession();
   return (
     <div>
@@ -53,7 +54,7 @@ function HeaderComponent({ isFromHome, children }: HeaderProps) {
           <span className="sr-only">ShadCN</span>
         </Link>
         <NavigationMenu className="hidden lg:flex">
-          <SearchInputComponent />
+          <SearchInputComponent onSearch={onSearch} />
           <NavigationMenuList>
             <NavigationMenuLink asChild>
               <Link

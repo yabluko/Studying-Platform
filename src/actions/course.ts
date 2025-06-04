@@ -1,3 +1,5 @@
+'use server'
+
 import { CourseCategory, PayloadSection } from "@/app/(app)/admin/courses/new/page";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { API_BASE_URL } from "@/config/http";
@@ -23,7 +25,7 @@ export async function insertCourse(info: CoursePayload): Promise<Course | undefi
         }
         formData.append("price", info.price)
         formData.append("category", info.category)
-
+        console.log(session)
         const res = await fetch(`${API_BASE_URL}/courses/new`, {
             method: "POST",
             body: formData,
@@ -31,14 +33,12 @@ export async function insertCourse(info: CoursePayload): Promise<Course | undefi
                 authorization: `Bearer ${session?.tokens.accessToken}`,
             },
         })
-
         if (!res.ok) {
             console.error('Failed to create course:', res.statusText)
             return undefined
         }
 
         const data = await res.json()
-        console.log('Course created successfully:', data)
         return data
     } catch (error) {
         console.error('Error creating course:', error)
@@ -96,27 +96,36 @@ export async function getCourses(): Promise<Course[] | null> {
 }
 
 export async function getCourseImage(imageName: string | null): Promise<any> {
+    console.log("Starting getCourseImage function");
     const session = await getServerSession(authOptions);
+    console.log("Session obtained:", !!session);
+
     try {
-        console.log("Sended", imageName)
+        console.log("Attempting to fetch image with name:", imageName);
         const res = await fetch(`${API_BASE_URL}/courses/course-image/${imageName ?? ''}`, {
             method: 'GET',
             headers: {
                 authorization: `Bearer ${session?.tokens.accessToken}`,
             },
         })
+        console.log('Course Image Response Status:', res.status);
+        console.log('Course Image Response Headers:', Object.fromEntries(res.headers.entries()));
+
         if (!res.ok) {
-            console.error(res.statusText);
-            return
+            console.error('Failed to fetch image:', res.statusText);
+            return;
         } else {
+            console.log('Successfully received image data');
             const buffer = await res.arrayBuffer();
             const base64 = Buffer.from(buffer).toString('base64');
             const contentType = res.headers.get('content-type') || 'image/jpeg';
+            console.log('Image converted to base64, content type:', contentType);
 
             return `data:${contentType};base64,${base64}`;
         }
     } catch (err) {
-        console.error('Err -', err)
+        console.error('Error in getCourseImage:', err);
+        throw err; // Re-throw the error to handle it in the component
     }
 }
 
@@ -147,7 +156,6 @@ export async function getLessonVideo(videoName: string | null): Promise<{ src: s
     if (!videoName) return null;
     const session = await getServerSession(authOptions);
     try {
-        console.log("Here", videoName);
         const res = await fetch(`${API_BASE_URL}/courses/lesson-video/${videoName}`, {
             method: 'GET',
             headers: {
@@ -176,7 +184,6 @@ export async function enrollInCourse(courseId: string) {
         if (!session) {
             throw new Error('Unauthorized');
         }
-        console.log("session", session);
         const response = await fetch(`${API_BASE_URL}/courses/${courseId}/enroll`, {
             method: 'POST',
             body: JSON.stringify({
@@ -188,7 +195,6 @@ export async function enrollInCourse(courseId: string) {
                 'Authorization': `Bearer ${session.tokens.accessToken}`,
             },
         });
-        console.log("response", response);
         if (!response.ok) {
             throw new Error('Failed to enroll in course');
         }
@@ -212,7 +218,6 @@ export async function markLessonAsCompleted(lessonId: string) {
         if (!response.ok) {
             throw new Error('Failed to mark lesson as completed');
         }
-        // console.log("response", await response.json());
         return await response.json();
     } catch (error) {
         console.error('Error marking lesson as completed:', error);
